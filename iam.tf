@@ -1,9 +1,9 @@
 
 #
-# Admin Role
+# Assume Role Policy
 #
 
-data "aws_iam_policy_document" "admin_role_assume" {
+data "aws_iam_policy_document" "role_assume" {
   statement {
     effect = "Allow"
     principals {
@@ -25,13 +25,17 @@ data "aws_iam_policy_document" "admin_role_assume" {
   }
 }
 
+#
+# Admin Role
+#
+
 resource aws_iam_role "admin_role" {
   count = var.enable_admin_role ? 1 : 0
 
   name = var.admin_role_name
   path = "/"
 
-  assume_role_policy   = data.aws_iam_policy_document.admin_role_assume.json
+  assume_role_policy   = data.aws_iam_policy_document.role_assume.json
   max_session_duration = var.max_session_duration_seconds
 
   tags = var.tags
@@ -48,35 +52,13 @@ resource "aws_iam_role_policy_attachment" "admin_managed_policy" {
 # Power User Role
 #
 
-data "aws_iam_policy_document" "power_user_role_assume" {
-  statement {
-    effect = "Allow"
-    principals {
-      type = "Federated"
-      identifiers = [
-        aws_iam_saml_provider.saml.arn,
-      ]
-    }
-    actions = [
-      "sts:AssumeRoleWithSAML"
-    ]
-    condition {
-      test     = "StringEquals"
-      variable = "SAML:aud"
-      values = [
-        var.application_acs_url,
-      ]
-    }
-  }
-}
-
 resource aws_iam_role "power_user_role" {
   count = var.enable_power_user_role ? 1 : 0
 
   name = var.power_user_role_name
   path = "/"
 
-  assume_role_policy   = data.aws_iam_policy_document.power_user_role_assume.json
+  assume_role_policy   = data.aws_iam_policy_document.role_assume.json
   max_session_duration = var.max_session_duration_seconds
 
   tags = var.tags
@@ -93,35 +75,13 @@ resource "aws_iam_role_policy_attachment" "power_user_managed_policy" {
 # Read Only User
 #
 
-data "aws_iam_policy_document" "read_only_role_assume" {
-  statement {
-    effect = "Allow"
-    principals {
-      type = "Federated"
-      identifiers = [
-        aws_iam_saml_provider.saml.arn,
-      ]
-    }
-    actions = [
-      "sts:AssumeRoleWithSAML"
-    ]
-    condition {
-      test     = "StringEquals"
-      variable = "SAML:aud"
-      values = [
-        var.application_acs_url,
-      ]
-    }
-  }
-}
-
 resource aws_iam_role "read_only_role" {
   count = var.enable_read_only_role ? 1 : 0
 
   name = var.read_only_role_name
   path = "/"
 
-  assume_role_policy   = data.aws_iam_policy_document.read_only_role_assume.json
+  assume_role_policy   = data.aws_iam_policy_document.role_assume.json
   max_session_duration = var.max_session_duration_seconds
 
   tags = var.tags
