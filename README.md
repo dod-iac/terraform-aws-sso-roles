@@ -13,7 +13,7 @@ References:
 module "sso_roles" {
   source = "dod-iac/sso-roles/aws"
 
-  aws_sso_metdata_url = "http://example.com/"
+  aws_sso_metadata_url = "http://example.com/"
 
   tags = {
     Project     = var.project
@@ -72,7 +72,7 @@ No Modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | admin\_role\_name | Role name for administrator access. | `string` | `"AWS_SSO_AdministratorAccessRole"` | no |
-| aws\_sso\_metdata\_url | Publicly accessible HTTPS location where SAML metadata.xml can be downloaded. | `string` | n/a | yes |
+| aws\_sso\_metadata\_url | Publicly accessible HTTPS location where SAML metadata.xml can be downloaded. | `string` | n/a | yes |
 | enable\_admin\_role | Create an administrative role. | `string` | `true` | no |
 | enable\_power\_user\_role | Create a power user role. | `string` | `true` | no |
 | enable\_read\_only\_role | Create a read-only role. | `string` | `true` | no |

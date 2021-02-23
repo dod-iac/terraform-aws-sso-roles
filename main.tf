@@ -14,7 +14,7 @@
  * module "sso_roles" {
  *   source = "dod-iac/sso-roles/aws"
  *
- *   aws_sso_metdata_url = "http://example.com/"
+ *   aws_sso_metadata_url = "http://example.com/"
  *
  *   tags = {
  *     Project     = var.project

@@ -1,5 +1,5 @@
 
-variable "aws_sso_metdata_url" {
+variable "aws_sso_metadata_url" {
   type        = string
   description = "Publicly accessible HTTPS location where SAML metadata.xml can be downloaded."
 }

@@ -98,7 +98,7 @@ resource "aws_lambda_function" "idp" {
   source_code_hash = data.archive_file.zip.output_base64sha256
   environment {
     variables = {
-      METADATA_URL = var.aws_sso_metdata_url
+      METADATA_URL = var.aws_sso_metadata_url
       IDP_NAME     = var.saml_provider_name
     }
   }
