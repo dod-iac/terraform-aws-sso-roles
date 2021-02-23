@@ -40,13 +40,14 @@ This project constitutes a work of the United States Government and is not subje
 |------|---------|
 | terraform | >= 0.13.0 |
 | aws | >= 3.0 |
+| http | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| archive | n/a |
 | aws | >= 3.0 |
+| http | >= 2.0 |
 
 ## Modules
 
@@ -56,16 +57,15 @@ No Modules.
 
 | Name |
 |------|
-| [archive_file](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) |
 | [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/caller_identity) |
 | [aws_iam_account_alias](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/iam_account_alias) |
 | [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/iam_policy_document) |
-| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_policy) |
 | [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role_policy_attachment) |
 | [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role) |
-| [aws_lambda_function](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lambda_function) |
+| [aws_iam_saml_provider](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_saml_provider) |
 | [aws_partition](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/partition) |
 | [aws_region](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/region) |
+| [http_http](https://registry.terraform.io/providers/hashicorp/http/2.0/docs/data-sources/http) |
 
 ## Inputs
 

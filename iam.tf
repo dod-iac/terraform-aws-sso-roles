@@ -9,10 +9,7 @@ data "aws_iam_policy_document" "admin_role_assume" {
     principals {
       type = "Federated"
       identifiers = [
-        format("arn:%s:iam::*:saml-provider/%s",
-          data.aws_partition.current.partition,
-          var.saml_provider_name,
-        ),
+        aws_iam_saml_provider.saml.arn,
       ]
     }
     actions = [
@@ -57,10 +54,7 @@ data "aws_iam_policy_document" "power_user_role_assume" {
     principals {
       type = "Federated"
       identifiers = [
-        format("arn:aws:iam::%s:saml-provider/%s",
-          data.aws_caller_identity.current.account_id,
-          var.saml_provider_name,
-        )
+        aws_iam_saml_provider.saml.arn,
       ]
     }
     actions = [
@@ -105,10 +99,7 @@ data "aws_iam_policy_document" "read_only_role_assume" {
     principals {
       type = "Federated"
       identifiers = [
-        format("arn:aws:iam::%s:saml-provider/%s",
-          data.aws_caller_identity.current.account_id,
-          var.saml_provider_name,
-        )
+        aws_iam_saml_provider.saml.arn,
       ]
     }
     actions = [

@@ -1,9 +1,6 @@
 
 output "identity_provider_arn" {
-  value = format("arn:%s:iam::*:saml-provider/%s",
-    data.aws_partition.current.partition,
-    var.saml_provider_name,
-  )
+  value       = aws_iam_saml_provider.saml.arn
   description = "ARN for SAML Identity Provider created in IAM"
 }
 
