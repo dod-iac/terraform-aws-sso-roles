@@ -118,6 +118,7 @@ No Modules.
 
 | Name | Description |
 |------|-------------|
+| assume\_role\_policy | IAM Assume Role Policy to use with other SAML enabled roles. |
 | identity\_provider\_arn | ARN for SAML Identity Provider created in IAM |
 | role\_arn\_admin | ARN for Admin role |
 | role\_arn\_power\_user | ARN for Power User role |

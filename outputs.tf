@@ -18,3 +18,8 @@ output "role_arn_read_only" {
   description = "ARN for Read Only role"
   value       = aws_iam_role.read_only_role[0].arn
 }
+
+output "assume_role_policy" {
+  value       = data.aws_iam_policy_document.role_assume.json
+  description = "IAM Assume Role Policy to use with other SAML enabled roles."
+}
