@@ -58,8 +58,8 @@ variable "tags" {
   default     = {}
 }
 
-variable "saml_signin_url" {
+variable "application_acs_url" {
   type        = string
-  description = "SAML Sign-in URL for Federated access"
+  description = "The Assertion Consumer Service (ACS) URL is used to identify where the service provider accepts SAML assertions."
   default     = "https://signin.amazonaws-us-gov.com/saml"
 }

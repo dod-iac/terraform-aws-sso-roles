@@ -5,8 +5,6 @@ This module is used to configure AWS roles for use with SSO and implements the o
 
 References:
 
-* [Enabling SAML 2.0 federation with AWS SSO and AWS Govcloud (US)](https://aws.amazon.com/blogs/publicsector/enabling-saml-2-0-federation-aws-sso-aws-govcloud-us/)
-
 ## Usage
 
 ```hcl
@@ -23,6 +21,39 @@ module "sso_roles" {
   }
 }
 ```
+
+## SSO Application Configuration
+
+For more detailed help see the references:
+
+* [Enabling SAML 2.0 federation with AWS SSO and AWS Govcloud (US)](https://aws.amazon.com/blogs/publicsector/enabling-saml-2-0-federation-aws-sso-aws-govcloud-us/)
+* [Troubleshooting SAML 2.0 federation with AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_saml.html)
+
+This section details some helpful information when creating a new SSO Application.
+
+### Details
+
+* Display Name: `<account-alias> (<role name)`
+* Description: `Access to AWS GovCloud Account <account-alias>`
+
+### Application properties
+
+* Application start URL: Leave blank
+* Relay state: Leave blank
+* Session Duration: 1 hour
+
+### Application metadata
+
+* Application ACS URL: <https://signin.amazonaws-us-gov.com/saml>
+* Application SAML audience: `urn:amazon:webservices:govcloud`
+
+### Attribute Mappings
+
+| User attribute in the application | Maps to this string value or user attribute in AWS SSO | Format |
+| --- | --- | --- |
+| Subject | `${user:name}` | persistent |
+| <https://aws.amazon.com/SAML/Attributes/RoleSessionName> | `${user:email}` | unspecified |
+| <https://aws.amazon.com/SAML/Attributes/Role> | `<saml-provider-arn>,<iam-role-arn>` | unspecified |
 
 ## Terraform Version
 
@@ -72,6 +103,7 @@ No Modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | admin\_role\_name | Role name for administrator access. | `string` | `"AWS_SSO_AdministratorAccessRole"` | no |
+| application\_acs\_url | The Assertion Consumer Service (ACS) URL is used to identify where the service provider accepts SAML assertions. | `string` | `"https://signin.amazonaws-us-gov.com/saml"` | no |
 | aws\_sso\_metadata\_url | Publicly accessible HTTPS location where SAML metadata.xml can be downloaded. | `string` | n/a | yes |
 | enable\_admin\_role | Create an administrative role. | `string` | `true` | no |
 | enable\_power\_user\_role | Create a power user role. | `string` | `true` | no |
@@ -80,7 +112,6 @@ No Modules.
 | power\_user\_role\_name | Role name for power user access. | `string` | `"AWS_SSO_PowerUserAccessRole"` | no |
 | read\_only\_role\_name | Role name for read-only access. | `string` | `"AWS_SSO_ReadOnlyAccessRole"` | no |
 | saml\_provider\_name | The name of the IAM SAML identity provider that will be created in Identity and Access Management. | `string` | `"AWS-SSO"` | no |
-| saml\_signin\_url | SAML Sign-in URL for Federated access | `string` | `"https://signin.amazonaws-us-gov.com/saml"` | no |
 | tags | Tags to be applied to resources | `map(string)` | `{}` | no |
 
 ## Outputs

@@ -6,7 +6,6 @@
  *
  * References:
  *
- * * [Enabling SAML 2.0 federation with AWS SSO and AWS Govcloud (US)](https://aws.amazon.com/blogs/publicsector/enabling-saml-2-0-federation-aws-sso-aws-govcloud-us/)
  *
  * ## Usage
  *
@@ -24,6 +23,40 @@
  *   }
  * }
  * ```
+ *
+ * ## SSO Application Configuration
+ *
+ * For more detailed help see the references:
+ *
+ * * [Enabling SAML 2.0 federation with AWS SSO and AWS Govcloud (US)](https://aws.amazon.com/blogs/publicsector/enabling-saml-2-0-federation-aws-sso-aws-govcloud-us/)
+ * * [Troubleshooting SAML 2.0 federation with AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_saml.html)
+ *
+ * This section details some helpful information when creating a new SSO Application.
+ *
+ * ### Details
+ *
+ * * Display Name: `<account-alias> (<role name)`
+ * * Description: `Access to AWS GovCloud Account <account-alias>`
+ *
+ * ### Application properties
+ *
+ * * Application start URL: Leave blank
+ * * Relay state: Leave blank
+ * * Session Duration: 1 hour
+ *
+ * ### Application metadata
+ *
+ * * Application ACS URL: <https://signin.amazonaws-us-gov.com/saml>
+ * * Application SAML audience: `urn:amazon:webservices:govcloud`
+ *
+ * ### Attribute Mappings
+ *
+ * | User attribute in the application | Maps to this string value or user attribute in AWS SSO | Format |
+ * | --- | --- | --- |
+ * | Subject | `${user:name}` | persistent |
+ * | <https://aws.amazon.com/SAML/Attributes/RoleSessionName> | `${user:email}` | unspecified |
+ * | <https://aws.amazon.com/SAML/Attributes/Role> | `<saml-provider-arn>,<iam-role-arn>` | unspecified |
+ *
  *
  * ## Terraform Version
  *
