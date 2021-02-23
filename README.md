@@ -80,6 +80,7 @@ No Modules.
 | power\_user\_role\_name | Role name for power user access. | `string` | `"AWS_SSO_PowerUserAccessRole"` | no |
 | read\_only\_role\_name | Role name for read-only access. | `string` | `"AWS_SSO_ReadOnlyAccessRole"` | no |
 | saml\_provider\_name | The name of the IAM SAML identity provider that will be created in Identity and Access Management. | `string` | `"AWS-SSO"` | no |
+| saml\_signin\_url | SAML Sign-in URL for Federated access | `string` | `"https://signin.amazonaws-us-gov.com/saml"` | no |
 | tags | Tags to be applied to resources | `map(string)` | `{}` | no |
 
 ## Outputs

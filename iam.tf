@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "admin_role_assume" {
       test     = "StringEquals"
       variable = "SAML:aud"
       values = [
-        "https://signin.amazonaws-us-gov.com/saml",
+        var.saml_signin_url,
       ]
     }
   }
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "power_user_role_assume" {
       test     = "StringEquals"
       variable = "SAML:aud"
       values = [
-        "https://signin.amazonaws-us-gov.com/saml",
+        var.saml_signin_url,
       ]
     }
   }
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "read_only_role_assume" {
       test     = "StringEquals"
       variable = "SAML:aud"
       values = [
-        "https://signin.amazonaws-us-gov.com/saml",
+        var.saml_signin_url,
       ]
     }
   }

@@ -57,3 +57,9 @@ variable "tags" {
   description = "Tags to be applied to resources"
   default     = {}
 }
+
+variable "saml_signin_url" {
+  type        = string
+  description = "SAML Sign-in URL for Federated access"
+  default     = "https://signin.amazonaws-us-gov.com/saml"
+}
