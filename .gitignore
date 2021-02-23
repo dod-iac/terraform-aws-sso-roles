@@ -1,0 +1,3 @@
+# Never check in archive file of build
+*.zip
+build/

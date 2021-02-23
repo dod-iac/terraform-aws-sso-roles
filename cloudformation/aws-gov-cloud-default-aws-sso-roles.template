@@ -1,0 +1,300 @@
+﻿AWSTemplateFormatVersion: 2010-09-09
+Description: Create AWS SSO IDP and default roles on all accounts.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "AWS SSO SAML IDP"
+        Parameters:
+          - AWSSSOMetadataUrl
+          - SAMLProviderName
+      -
+        Label:
+          default: "Roles"
+        Parameters:
+          - EnableAdminRole
+          - AdminRoleName
+          - EnablePowerUserRole
+          - PowerUserRoleName
+          - EnableReadOnlyRole
+          - ReadOnlyRoleName
+
+Parameters:
+  AWSSSOMetadataUrl:
+    Type: String
+    Description: Publicly accessible HTTPS location where SAML metadata.xml can be downloaded.
+  SAMLProviderName:
+    Type: String
+    Description: The name of the IAM SAML identity provider that will be created in Identity and Access Management.
+    Default: AWS-SSO
+  AdminRoleName:
+    Type: String
+    Description: Role name for administrator access.
+    Default: AWS_SSO_AdministratorAccessRole
+  PowerUserRoleName:
+    Type: String
+    Description: Role name for power user access.
+    Default: AWS_SSO_PowerUserAccessRole
+  ReadOnlyRoleName:
+    Type: String
+    Description: Role name for read-only access.
+    Default: AWS_SSO_ReadOnlyAccessRole
+  EnableAdminRole:
+    Type: String
+    Default: 'true'
+    Description: Create an administrative role.
+    AllowedValues:
+      - 'true'
+      - 'false'
+  EnablePowerUserRole:
+    Type: String
+    Default: 'true'
+    Description: Create a power user role.
+    AllowedValues:
+      - 'true'
+      - 'false'
+  EnableReadOnlyRole:
+    Type: String
+    Default: 'true'
+    Description: Create a read-only role.
+    AllowedValues:
+      - 'true'
+      - 'false'
+  MaxSessionDurationSeconds:
+    Type: Number
+    Default: 14400
+    Description: Maximum CLI Session duration in seconds
+
+Conditions:
+  CreateAdminRole: !Equals
+    - !Ref EnableAdminRole
+    - 'true'
+  CreatePowerUserRole: !Equals
+    - !Ref EnablePowerUserRole
+    - 'true'
+  CreateReadOnlyRole: !Equals
+    - !Ref EnableReadOnlyRole
+    - 'true'
+
+Resources:
+  AdminRole:
+    Type: AWS::IAM::Role
+    Condition: CreateAdminRole
+    Properties:
+      RoleName: !Ref AdminRoleName
+      MaxSessionDuration: !Ref MaxSessionDurationSeconds
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated:
+                - !GetAtt SAMLIdp.SAMLProviderArn
+            Action:
+              - sts:AssumeRoleWithSAML
+            Condition:
+              StringEquals:
+                'SAML:aud':
+                  'https://signin.amazonaws-us-gov.com/saml'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws-us-gov:iam::aws:policy/AdministratorAccess
+  PowerUserRole:
+    Type: AWS::IAM::Role
+    Condition: CreatePowerUserRole
+    Properties:
+      RoleName: !Ref PowerUserRoleName
+      MaxSessionDuration: !Ref MaxSessionDurationSeconds
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated:
+                - !GetAtt SAMLIdp.SAMLProviderArn
+            Action:
+              - sts:AssumeRoleWithSAML
+            Condition:
+              StringEquals:
+                'SAML:aud':
+                  'https://signin.amazonaws-us-gov.com/saml'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws-us-gov:iam::aws:policy/PowerUserAccess
+  ReadOnlyRole:
+    Type: AWS::IAM::Role
+    Condition: CreateReadOnlyRole
+    Properties:
+      RoleName: !Ref ReadOnlyRoleName
+      MaxSessionDuration: !Ref MaxSessionDurationSeconds
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated:
+                - !GetAtt SAMLIdp.SAMLProviderArn
+            Action:
+              - sts:AssumeRoleWithSAML
+            Condition:
+              StringEquals:
+                'SAML:aud':
+                  'https://signin.amazonaws-us-gov.com/saml'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws-us-gov:iam::aws:policy/ReadOnlyAccess
+
+  SAMLIdpLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      ManagedPolicyArns:
+        - 'arn:aws-us-gov:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: list
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'iam:ListSAMLProviders'
+                Resource: '*'
+
+  SAMLIdpLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.handler"
+      Role:
+        Fn::GetAtt:
+          - "SAMLIdpLambdaRole"
+          - "Arn"
+      Code:
+        ZipFile: >
+          var cfr = require('cfn-response');
+          var AWS = require('aws-sdk');
+          var iam = new AWS.IAM();
+          var https = require('https');
+          var fs = require('fs');
+
+          exports.handler = function(event, context) {
+
+            console.log(event);
+            var resID = event.PhysicalResourceId || context.awsRequestId;
+            var metadataUrl = event.ResourceProperties.metadataUrl;
+            var idpName = event.ResourceProperties.idpName;
+            var filename = '/tmp/metadata.xml'
+            var file = fs.createWriteStream(filename);
+
+            if (event.RequestType == 'Create' || event.RequestType == 'Update') {
+
+              var request = https.get(metadataUrl, function(response) {
+                response.pipe(file);
+                file.on('finish', function() {
+                  file.close( function () {
+                    let rawdata = fs.readFileSync(filename, 'utf8');
+                    if (event.RequestType == 'Update') {
+                      var paramslist = {};
+                      iam.listSAMLProviders(paramslist, function(err, data) {
+                        if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                        else {
+                          var arn='';
+                          for (var provider in data.SAMLProviderList) {
+                            if (data.SAMLProviderList[provider].Arn.split('/')[1] == idpName) {
+                              console.log('Update provider. ' + data.SAMLProviderList[provider].Arn + ' already exists.')
+                              arn = data.SAMLProviderList[provider].Arn;
+                            }
+                          }
+                          if (arn == '') {
+                            var params = { Name: idpName,  SAMLMetadataDocument: rawdata };
+                            iam.createSAMLProvider(params, function(err, data) {
+                              if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                              else cfr.send(event, context, cfr.SUCCESS, data, resID);
+                            });
+                          } else {
+                            var params = { SAMLProviderArn: arn, SAMLMetadataDocument: rawdata };
+                            iam.updateSAMLProvider(params, function(err, data) {
+                              if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                              else cfr.send(event, context, cfr.SUCCESS, data, resID);
+                            });
+                          }
+                        }
+                      });
+                    } else {
+                      var params = { Name: idpName, SAMLMetadataDocument: rawdata };
+                      iam.createSAMLProvider(params, function(err, data) {
+                        if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                        else cfr.send(event, context, cfr.SUCCESS, data, resID);
+                      });
+                    }
+                  });
+                });
+              }).on('error', function(err) {
+                fs.unlink(filename);
+                cfr.send(event, context, cfr.FAILED, err);
+              });
+            } else if (event.RequestType == 'Delete') {
+
+              var paramslist = {};
+              iam.listSAMLProviders(paramslist, function(err, data) {
+                if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                else {
+                  var deleteResource = false;
+                  var arn;
+                  console.log(data.SAMLProviderList);
+                  for (var provider in data.SAMLProviderList) {
+                    if (data.SAMLProviderList[provider].Arn.split('/')[1] == idpName) {
+                      console.log('Delete provider. ' + data.SAMLProviderList[provider].Arn + ' already exists.')
+                      deleteResource = true;
+                      arn = data.SAMLProviderList[provider].Arn;
+                    }
+                  }
+                  var params = { SAMLProviderArn: arn };
+                  if (deleteResource == true) {
+                    iam.deleteSAMLProvider(params, function(err, data) {
+                      if (err) cfr.send(event, context, cfr.FAILED, err, resID);
+                      else cfr.send(event, context, cfr.SUCCESS, data, resID);
+                    });
+                  } else {
+                   cfr.send(event, context, cfr.SUCCESS, {success: 'Provider did not exist'}, resID);
+                  }
+                }
+              });
+            } else {
+              cfr.send(event, context, cfr.FAILED, { error: 'Method not supported'}, resID);
+            }
+          };
+      Runtime: "nodejs12.x"
+      Timeout: "30"
+
+  SAMLIdp:
+    Type: Custom::SAMLIdp
+    Properties:
+      ServiceToken: !GetAtt SAMLIdpLambda.Arn
+      metadataUrl: !Ref AWSSSOMetadataUrl
+      idpName: !Ref SAMLProviderName
+
+Outputs:
+  IdentityProviderArn:
+    Description: ARN for SAML Identity Provider created in IAM
+    Value: !Sub
+    - arn:aws-us-gov:iam::${AWS::AccountId}:saml-provider/${IdpName}
+    - { IdpName: !Ref SAMLProviderName }
+
+  RoleArnAdmin:
+    Description: ARN for Admin role
+    Value: !GetAtt AdminRole.Arn
+  RoleArnPowerUser:
+    Description: ARN for Power User role
+    Value: !GetAtt PowerUserRole.Arn
+  RoleArnReadOnly:
+    Description: ARN for Read Only role
+    Value: !GetAtt ReadOnlyRole.Arn
