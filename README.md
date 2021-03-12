@@ -121,6 +121,7 @@ No Modules.
 |------|-------------|
 | assume\_role\_policy | IAM Assume Role Policy to use with other SAML enabled roles. |
 | identity\_provider\_arn | ARN for SAML Identity Provider created in IAM |
+| max\_session\_duration\_seconds | Maximum CLI Session duration in seconds |
 | role\_arn\_admin | ARN for Admin role |
 | role\_arn\_power\_user | ARN for Power User role |
 | role\_arn\_read\_only | ARN for Read Only role |
