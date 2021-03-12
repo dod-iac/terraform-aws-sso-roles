@@ -3,12 +3,15 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
+      - id: check-json
       - id: check-merge-conflict
       - id: check-yaml
-      - id: detect-aws-credentials
       - id: detect-private-key
+      - id: pretty-format-json
+        args:
+          - --autofix
       - id: no-commit-to-branch
-      - id: requirements-txt-fixer
+        args: [--branch, main, --branch, master, --pattern, '\d\.\d\.\d']
       - id: trailing-whitespace
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
@@ -22,14 +25,3 @@ repos:
       - id: terraform_fmt
       - id: terraform_docs
       - id: terraform_tflint
-
-  - repo: https://github.com/ambv/black
-    rev: 20.8b1
-    hooks:
-      - id: black
-        language_version: python3.9
-
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
-    hooks:
-      - id: flake8
