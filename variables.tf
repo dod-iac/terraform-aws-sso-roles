@@ -31,19 +31,19 @@ variable "read_only_role_name" {
 variable "enable_admin_role" {
   type        = string
   description = "Create an administrative role."
-  default     = true
+  default     = false
 }
 
 variable "enable_power_user_role" {
   type        = string
   description = "Create a power user role."
-  default     = true
+  default     = false
 }
 
 variable "enable_read_only_role" {
   type        = string
   description = "Create a read-only role."
-  default     = true
+  default     = false
 }
 
 variable "max_session_duration_seconds" {

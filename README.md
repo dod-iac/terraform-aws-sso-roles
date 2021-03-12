@@ -32,6 +32,16 @@ For more detailed help see the references:
 
 This section details some helpful information when creating a new SSO Application.
 
+### IAM Roles
+
+This module comes with three pre-configured roles that can be created. By default they are not created. This list of roles is:
+
+* Admin Access
+* Power User Access
+* Read Only Access
+
+If you are providing an external IAM role then you do not need to enable any of these.
+
 ### Details
 
 * Display Name: `<account-alias> (<role name)`
@@ -106,9 +116,9 @@ No Modules.
 | admin\_role\_name | Role name for administrator access. | `string` | `"AWS_SSO_AdministratorAccessRole"` | no |
 | application\_acs\_url | The Assertion Consumer Service (ACS) URL is used to identify where the service provider accepts SAML assertions. | `string` | `"https://signin.amazonaws-us-gov.com/saml"` | no |
 | aws\_sso\_metadata\_url | Publicly accessible HTTPS location where SAML metadata.xml can be downloaded. | `string` | n/a | yes |
-| enable\_admin\_role | Create an administrative role. | `string` | `true` | no |
-| enable\_power\_user\_role | Create a power user role. | `string` | `true` | no |
-| enable\_read\_only\_role | Create a read-only role. | `string` | `true` | no |
+| enable\_admin\_role | Create an administrative role. | `string` | `false` | no |
+| enable\_power\_user\_role | Create a power user role. | `string` | `false` | no |
+| enable\_read\_only\_role | Create a read-only role. | `string` | `false` | no |
 | max\_session\_duration\_seconds | Maximum CLI Session duration in seconds | `number` | `14400` | no |
 | power\_user\_role\_name | Role name for power user access. | `string` | `"AWS_SSO_PowerUserAccessRole"` | no |
 | read\_only\_role\_name | Role name for read-only access. | `string` | `"AWS_SSO_ReadOnlyAccessRole"` | no |
