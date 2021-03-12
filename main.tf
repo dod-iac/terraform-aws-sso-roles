@@ -33,6 +33,16 @@
  *
  * This section details some helpful information when creating a new SSO Application.
  *
+ * ### IAM Roles
+ *
+ * This module comes with three pre-configured roles that can be created. By default they are not created. This list of roles is:
+ *
+ * * Admin Access
+ * * Power User Access
+ * * Read Only Access
+ *
+ * If you are providing an external IAM role then you do not need to enable any of these.
+ *
  * ### Details
  *
  * * Display Name: `<account-alias> (<role name)`
