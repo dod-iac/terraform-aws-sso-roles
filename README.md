@@ -1,3 +1,4 @@
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 # SSO Roles
 
 This module is used to configure AWS roles for use with SSO and implements the official
@@ -69,15 +70,15 @@ This project constitutes a work of the United States Government and is not subje
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13.0 |
-| aws | >= 3.0 |
+| terraform | >= 0.13 |
+| aws | ~> 3.0 |
 | http | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 3.0 |
+| aws | ~> 3.0 |
 | http | >= 2.0 |
 
 ## Modules
@@ -88,15 +89,15 @@ No Modules.
 
 | Name |
 |------|
-| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/caller_identity) |
-| [aws_iam_account_alias](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/iam_account_alias) |
-| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/iam_policy_document) |
-| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role_policy_attachment) |
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role) |
-| [aws_iam_saml_provider](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_saml_provider) |
-| [aws_partition](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/partition) |
-| [aws_region](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/region) |
-| [http_http](https://registry.terraform.io/providers/hashicorp/http/2.0/docs/data-sources/http) |
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) |
+| [aws_iam_account_alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_account_alias) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+| [aws_iam_saml_provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_saml_provider) |
+| [aws_partition](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) |
+| [aws_region](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) |
+| [http_http](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) |
 
 ## Inputs
 
@@ -123,3 +124,4 @@ No Modules.
 | role\_arn\_admin | ARN for Admin role |
 | role\_arn\_power\_user | ARN for Power User role |
 | role\_arn\_read\_only | ARN for Read Only role |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
