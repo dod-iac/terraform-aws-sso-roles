@@ -13,6 +13,7 @@ data "aws_iam_policy_document" "role_assume" {
       ]
     }
     actions = [
+      "sts:TagSession",
       "sts:AssumeRoleWithSAML"
     ]
     condition {
